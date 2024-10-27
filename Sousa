@@ -1,0 +1,68 @@
+import pygame
+import sys
+import random
+
+# Inicialize Pygame
+pygame.init()
+
+# Defina constantes
+LARGURA = 800
+ALTURA = 600
+VEL = 5
+
+# Crie a janela
+tela = pygame.display.set_mode((LARGURA, ALTURA))
+
+# Defina cores
+PRETO = (0, 0, 0)
+BRANCO = (255, 255, 255)
+VERMELHO = (255, 0, 0)
+
+# Crie o jogador
+jogador = pygame.Rect(100, 100, 50, 50)
+
+# Crie os inimigos
+inimigos = [pygame.Rect(random.randint(0, LARGURA - 50), random.randint(0, ALTURA - 50), 50, 50) for _ in range(10)]
+
+# Pontuação
+pontos = 0
+
+# Loop principal
+while True:
+    # Eventos
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # Movimento do jogador
+    teclas = pygame.key.get_pressed()
+    if teclas[pygame.K_LEFT]:
+        jogador.x -= VEL
+    if teclas[pygame.K_RIGHT]:
+        jogador.x += VEL
+    if teclas[pygame.K_UP]:
+        jogador.y -= VEL
+    if teclas[pygame.K_DOWN]:
+        jogador.y += VEL
+
+    # Colisões com inimigos
+    for inimigo in inimigos:
+        if jogador.colliderect(inimigo):
+            pontos += 1
+            inimigos.remove(inimigo)
+            inimigos.append(pygame.Rect(random.randint(0, LARGURA - 50), random.randint(0, ALTURA - 50), 50, 50))
+
+    # Desenhe tudo
+    tela.fill(PRETO)
+    pygame.draw.rect(tela, BRANCO, jogador)
+    for inimigo in inimigos:
+        pygame.draw.rect(tela, VERMELHO, inimigo)
+    fonte = pygame.font.Font(None, 36)
+    texto = fonte.render(f"Pontos: {pontos}", True, BRANCO)
+    tela.blit(texto, (10, 10))
+    pygame.display.update()
+
+    # Taxa de quadros
+    pygame.time.Clock().tick(60)
+
