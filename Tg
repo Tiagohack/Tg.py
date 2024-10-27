@@ -1,0 +1,68 @@
+
+
+*Código*
+
+```
+import pygame
+import sys
+
+# Inicialize Pygame
+pygame.init()
+
+# Defina constantes
+LARGURA = 800
+ALTURA = 600
+
+# Crie a janela
+tela = pygame.display.set_mode((LARGURA, ALTURA))
+
+# Defina cores
+PRETO = (0, 0, 0)
+BRANCO = (255, 255, 255)
+AZUL = (0, 0, 255)
+
+# Crie o boneco
+class Boneco:
+    def __init__(self):
+        self.x = 100
+        self.y = 100
+        self.largura = 50
+        self.altura = 50
+        self.vel = 5
+
+    def desenhar(self):
+        pygame.draw.rect(tela, AZUL, (self.x, self.y, self.largura, self.altura))
+        pygame.draw.circle(tela, BRANCO, (self.x + self.largura // 2, self.y + self.altura // 2), 10)
+
+    def mover(self):
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_LEFT]:
+            self.x -= self.vel
+        if teclas[pygame.K_RIGHT]:
+            self.x += self.vel
+        if teclas[pygame.K_UP]:
+            self.y -= self.vel
+        if teclas[pygame.K_DOWN]:
+            self.y += self.vel
+
+# Crie o boneco
+boneco = Boneco()
+
+# Loop principal
+while True:
+    # Eventos
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # Mover o boneco
+    boneco.mover()
+
+    # Desenhe tudo
+    tela.fill(PRETO)
+    boneco.desenhar()
+    pygame.display.update()
+
+    # Taxa de quadros
+    pygame.time.Clock().tick(60)
